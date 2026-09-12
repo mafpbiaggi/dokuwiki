@@ -1,0 +1,5 @@
+upgrade/
+docker/
+
+.gitignore
+.dockerignore
