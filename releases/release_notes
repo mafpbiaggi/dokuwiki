@@ -1,25 +1,25 @@
-Release 2022-07-31b “Igor”
-(https://www.dokuwiki.org/changes#release_2022-07-31b_igor)
+Release 2023-04-04b “Jack Jackrum”
+(https://www.dokuwiki.org/changes#release_2023-04-04b_jack_jackrum)
 
-Fix various errors in PHP8 support
-Drop support for PHP versions earlier than 7.2
-SVG-based smileys replace GIF versions
-:!: may require template update 3344
-:!: plugins directly embedding SVG may need CSS adjustments 3690
-Allow “revert” action for logged in users only
-Various translation updates
-Add a class .logo to the h1 title to let administrators remove the h1 around the logo 3408
-Use Slika library for image resizing and cropping, with:
-auto rotation based on EXIF tags
-support for WEBP
-Refactored logging mechanism 3230, 3203 and logviewer
-Refactored media manager 3372 and lazy loading of images
-Support for SVG images
-New form events used. :!: Plugins should implement them, because the old form events are not triggered anymore
-Some smaller security fixes
-:!: On farm setups a log dir needs to be created manually in animals
+A lot of fixes for warnings in PHP8+
+A new feature flag hidewarnings will suppress the output of warnings, if PHP is configured to show warnings to the end user
+The options to embed HTML and PHP have been completely removed for security reasons :!:
+Forum discussion
+Plugin alternative
+Fixes
+quicksearch with UTF-8 chars
+basic auth header parsing
+old revisions for pages with dots
+feed titles
+handling of unknown config options
+relaxed media CSP headers for PDF and SVG handling
+relaxed browseruid check for better browser compatibility
+compatibility updates for mail sending
+Unit Tests use php-dom-wrapper instead of phpquery now :!:
+Improved error logging
+Dependency Updates
 
-Hotfix 2022-07-31a
-fix an XSS security vulnerability 3761
-Hotfix 2022-07-31b
+Hotfix 2023-04-04a
 fix an XSS security vulnerability in RSS handling 3967
+Hotfix 2023-04-04b
+fix XSS vulnerability in metadata export 4305
