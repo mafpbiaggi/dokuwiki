@@ -1,4 +1,4 @@
-FROM php:5.6-apache
+FROM php:7.2-apache
 
 WORKDIR /var/www/html
 COPY --chown=www-data:www-data . .

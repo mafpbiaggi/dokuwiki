@@ -1,28 +1,25 @@
-Release 2020-07-29a “Hogfather” 
-(https://www.dokuwiki.org/changes#release_2020-07-29a_hogfather)
+Release 2022-07-31b “Igor”
+(https://www.dokuwiki.org/changes#release_2022-07-31b_igor)
 
-Lots of internal refactoring to make the code base more modern and robust. You can read a bit more on the background here.
-Defer the loading of JavaScript to improve initial page loads :!: (Some plugins needs to temporary disable the defer_js feature flag)
-PHP 7.4 compatibility and some preparations for the upcoming PHP8
-New trustedproxy setting for installations behind a reverse proxy :!:
-New command line script for managing extensions
-RSS Feed can now show new items only
-A whole ton of smaller bug fixes and improvements
-Lots of translation upgrades
+Fix various errors in PHP8 support
+Drop support for PHP versions earlier than 7.2
+SVG-based smileys replace GIF versions
+:!: may require template update 3344
+:!: plugins directly embedding SVG may need CSS adjustments 3690
+Allow “revert” action for logged in users only
+Various translation updates
+Add a class .logo to the h1 title to let administrators remove the h1 around the logo 3408
+Use Slika library for image resizing and cropping, with:
+auto rotation based on EXIF tags
+support for WEBP
+Refactored logging mechanism 3230, 3203 and logviewer
+Refactored media manager 3372 and lazy loading of images
+Support for SVG images
+New form events used. :!: Plugins should implement them, because the old form events are not triggered anymore
+Some smaller security fixes
+:!: On farm setups a log dir needs to be created manually in animals
 
-:!: Note: because of various internal changes, not all plugins or templates may be compatible with this release. It is recommended to check the documentation of the plugins you use before upgrading. As always a backup is recommended before upgrading. :!:
-
-Please also read:
-
-Hogfather Plugin Compatibility
-Quick Reminder: What to do when a plugin doesn't work on Hogfather
-DokuWiki Recovery Script
-
-And please also ;
-
-Search the Forum when you encounter problems, chances are high that there are already solutions available
-If you have no clue where the issue originates, check the log files of your webserver.
-
-Hotfix 2020-07-29a
+Hotfix 2022-07-31a
 fix an XSS security vulnerability 3761
- 
+Hotfix 2022-07-31b
+fix an XSS security vulnerability in RSS handling 3967
