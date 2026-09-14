@@ -3,19 +3,8 @@ Release 2026-07-14 “Mort”
 
 >> DokuWiki requires at least PHP 8.2 now
 
-- Optional native Markdown parsing, selectable through the new syntax setting. Classic DokuWiki syntax remains the default. See Patreon Post. Some small changes on how DokuWiki syntax is parsed and rendered, might require minor cleanup on some pages
-- Completely rewritten fulltext search index. See Patreon Post.
-- Code and file blocks now have a copy-to-clipboard button. Plugins that provided this functionality for previous DokuWiki releases are at least redundant, if not incompatible, and should be removed if unexpected behavior happens.
-- WEBP images now get previews in the media manager
-- EXIF-rotated images are no longer shown cropped in previews
-- New disableactions value diff to disable the diff/compare action
-- Reworked feed caching to avoid cache flooding
-- Subscription list mails now include diff links
-- Explicit Referrer-Policy header
-- Various accessibility and UI improvements to the editor, toolbar pickers, login form and extension manager
-- New client_ip_header setting replaces the old realip setting
-- Parser internals refactored: Plugins providing parser modes may need updates 4636
-- Many deprecated search (ft_*, idx_*) and a few parser functions/classes were deprecated or removed. Plugins may need updates 4543 4646
-- bin/gittool.php now prefers SSH when cloning repositories
-- Various security fixes and improvements
-- Various bug fixes, language and dependency updates
+Hotfix
+2026-07-14a
+- Various security fixes also affecting earlier releases (see 4703)
+- Plugin compatibility fixes in Markdown mode
+- PARSER_HANDLER_DONE fix when sub parsers are used
