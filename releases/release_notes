@@ -13,11 +13,5 @@ Release 2025-05-14 “Librarian”
 - Various Bugfixes, language and dependency updates a bunch of methods and classes that had been marked as deprecated in  previous versions have been removed. Plugins may need updates.
 
 Hotfix
-2025-05-14a
-- fix issues related to OS version reading 4446 4445
-- fix issues with locale dependent dates 4449
-- fix issues with styling in Extension Manager
-- no longer complain about missing write permissions for bundled extensions in Extension Manager
-- adds missing remote API support for Extension Manager
 2025-05-14b
 - fix XSS vulnerability in search 4512
