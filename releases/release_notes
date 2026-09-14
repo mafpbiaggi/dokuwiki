@@ -1,25 +1,30 @@
-Release 2023-04-04b “Jack Jackrum”
-(https://www.dokuwiki.org/changes#release_2023-04-04b_jack_jackrum)
+Release 2024-02-06b “Kaos”
+(https://www.dokuwiki.org/changes#release_2024-02-06b_kaos)
 
-A lot of fixes for warnings in PHP8+
-A new feature flag hidewarnings will suppress the output of warnings, if PHP is configured to show warnings to the end user
-The options to embed HTML and PHP have been completely removed for security reasons :!:
-Forum discussion
-Plugin alternative
-Fixes
-quicksearch with UTF-8 chars
-basic auth header parsing
-old revisions for pages with dots
-feed titles
-handling of unknown config options
-relaxed media CSP headers for PDF and SVG handling
-relaxed browseruid check for better browser compatibility
-compatibility updates for mail sending
-Unit Tests use php-dom-wrapper instead of phpquery now :!:
-Improved error logging
-Dependency Updates
+>> DokuWiki requires at least PHP 7.4 now
 
-Hotfix 2023-04-04a
-fix an XSS security vulnerability in RSS handling 3967
-Hotfix 2023-04-04b
-fix XSS vulnerability in metadata export 4305
+- Further fixes for warnings in PHP8+
+- Complete Overhaul of the Remote API and introduction of the JSONRPC transport (see Patreon Post)
+- Introduction of Token Auth
+- Automatic pruning of logs (see Configuration Setting: logretain)
+- Plugin authors can now set an update message to be shown in extension manager
+- Refactored feed generation
+- Better baseurl detection when running behind reverse proxy
+- Developers now need to install dev dependencies via composer
+- Automatic loading of vendor/autoload.php for plugins
+- SameSite=Lax cookie attribute is set by default now (see Configuration Setting: samesitecookie)
+- The default dokuwiki template now supports a SVG logo. The logo height is now fixed to 64px :!:
+- Lots of coding style fixes
+- Various bug fixes and smaller tweaks
+
+Hotfix
+2024-02-06a
+- fix problem with parsing uneven table columns 4186
+- fix logo aspect ratio in dokuwiki template when using PNG logo 4187
+- re-add missing FEED_DATA_PROCESS event 4191
+- fix error handling for plugins with missing info 4193
+- fix doubly declared cache class error 4200
+- fix content-type header for feeds 4203
+- ignore decryption errors on old cookies 4198
+2024-02-06b
+- fix XSS vulnerability in metadata export 4305
