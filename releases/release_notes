@@ -1,17 +1,21 @@
-Release 2025-05-14 “Librarian”
-(https://www.dokuwiki.org/changes#release_2025-05-14_librarian)
+Release 2026-07-14 “Mort”
+(https://www.dokuwiki.org/changes#release_2026-07-14_mort)
 
-- Refactored Extension Manager now supports dependencies and checks PHP versions. See Patreon Post
-- Linkwizard now prefers to create relative links, its JavaScript has been modernized
-- New mechanism to trust proxies. See Configuration Setting: trustedproxies and Configuration Setting: realip
-- Alternative header for Token Authentication
-- More version info in admin screen (for hopefully better bug reports)
-- Various remote API improvements
-- Support for JavaScript nonces provided by environment. See 3788
-- Fixed delete profile form
-- Experimental tree builder support for use by plugin developers. See Patreon Post
-- Various Bugfixes, language and dependency updates a bunch of methods and classes that had been marked as deprecated in  previous versions have been removed. Plugins may need updates.
+>> DokuWiki requires at least PHP 8.2 now
 
-Hotfix
-2025-05-14b
-- fix XSS vulnerability in search 4512
+- Optional native Markdown parsing, selectable through the new syntax setting. Classic DokuWiki syntax remains the default. See Patreon Post. Some small changes on how DokuWiki syntax is parsed and rendered, might require minor cleanup on some pages
+- Completely rewritten fulltext search index. See Patreon Post.
+- Code and file blocks now have a copy-to-clipboard button. Plugins that provided this functionality for previous DokuWiki releases are at least redundant, if not incompatible, and should be removed if unexpected behavior happens.
+- WEBP images now get previews in the media manager
+- EXIF-rotated images are no longer shown cropped in previews
+- New disableactions value diff to disable the diff/compare action
+- Reworked feed caching to avoid cache flooding
+- Subscription list mails now include diff links
+- Explicit Referrer-Policy header
+- Various accessibility and UI improvements to the editor, toolbar pickers, login form and extension manager
+- New client_ip_header setting replaces the old realip setting
+- Parser internals refactored: Plugins providing parser modes may need updates 4636
+- Many deprecated search (ft_*, idx_*) and a few parser functions/classes were deprecated or removed. Plugins may need updates 4543 4646
+- bin/gittool.php now prefers SSH when cloning repositories
+- Various security fixes and improvements
+- Various bug fixes, language and dependency updates
