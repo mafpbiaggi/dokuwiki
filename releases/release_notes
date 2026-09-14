@@ -3,8 +3,6 @@ Release 2026-07-14 “Mort”
 
 >> DokuWiki requires at least PHP 8.2 now
 
-Hotfix
-2026-07-14a
-- Various security fixes also affecting earlier releases (see 4703)
-- Plugin compatibility fixes in Markdown mode
-- PARSER_HANDLER_DONE fix when sub parsers are used
+2026-07-14c
+- Critical security fix 4752
+- CacheInstructions now does unserialize which will impact plugins passing object to instruction cache, need to refactor to send non-object to instruction cache
