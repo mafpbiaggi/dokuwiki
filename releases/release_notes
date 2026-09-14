@@ -1,0 +1,28 @@
+Release 2020-07-29a “Hogfather” 
+(https://www.dokuwiki.org/changes#release_2020-07-29a_hogfather)
+
+Lots of internal refactoring to make the code base more modern and robust. You can read a bit more on the background here.
+Defer the loading of JavaScript to improve initial page loads :!: (Some plugins needs to temporary disable the defer_js feature flag)
+PHP 7.4 compatibility and some preparations for the upcoming PHP8
+New trustedproxy setting for installations behind a reverse proxy :!:
+New command line script for managing extensions
+RSS Feed can now show new items only
+A whole ton of smaller bug fixes and improvements
+Lots of translation upgrades
+
+:!: Note: because of various internal changes, not all plugins or templates may be compatible with this release. It is recommended to check the documentation of the plugins you use before upgrading. As always a backup is recommended before upgrading. :!:
+
+Please also read:
+
+Hogfather Plugin Compatibility
+Quick Reminder: What to do when a plugin doesn't work on Hogfather
+DokuWiki Recovery Script
+
+And please also ;
+
+Search the Forum when you encounter problems, chances are high that there are already solutions available
+If you have no clue where the issue originates, check the log files of your webserver.
+
+Hotfix 2020-07-29a
+fix an XSS security vulnerability 3761
+ 
