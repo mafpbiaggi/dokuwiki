@@ -1,0 +1,46 @@
+name: Docker build environment
+
+on:
+  pull_request: 
+    branches: [ '*' ]
+    paths:
+      - '.github/workflows/build.yaml'
+      - 'docker/**'
+      - 'app/**'
+      - 'tests/**'
+      - 'releases/**'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: vars
+        run: echo "tag=$(cut -d' ' -f1 app/VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to GitHub container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build app image
+        run: |
+          docker build \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            -t ghcr.io/${{ github.repository_owner }}/dokuwiki:${{ steps.vars.outputs.tag }} \
+            -f docker/Dockerfile \
+            app/
+
+      - name: Push app image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/dokuwiki:${{ steps.vars.outputs.tag }}
