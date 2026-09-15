@@ -35,10 +35,10 @@ jobs:
           docker run -d \
             --name dokuwiki_test \
             -p 80:80 \
-            -v "${PERSISTENT_DATA}" \
-            -v "${PERSISTENT_CONF1}" \
-            -v "${PERSISTENT_CONF2}" \
-            -v "${PERSISTENT_CONF3}" \
+            -v ${PERSISTENT_DATA} \
+            -v ${PERSISTENT_CONF1} \
+            -v ${PERSISTENT_CONF2} \
+            -v ${PERSISTENT_CONF3} \
             ghcr.io/${{ github.repository_owner }}/dokuwiki:$IMAGE_TAG
 
       - name: Wait for container to be running
