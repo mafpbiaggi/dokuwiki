@@ -27,10 +27,11 @@ jobs:
       - name: Pull image and run container
         run: |
           IMAGE_TAG=$(cut -d' ' -f1 app/VERSION)
-          PERSISTENT_DATA="tests/data:/var/www/html/data"
-          PERSISTENT_CONF1="tests/conf/local.php:/var/www/html/conf/local.php"
-          PERSISTENT_CONF2="tests/conf/acl.auth.php:/var/www/html/conf/acl.auth.php"
-          PERSISTENT_CONF3="tests/conf/users.auth.php:/var/www/html/conf/users.auth.php"
+          WORKDIR=$(pwd)
+          PERSISTENT_DATA="${WORKDIR}/tests/data:/var/www/html/data"
+          PERSISTENT_CONF1="${WORKDIR}/tests/conf/local.php:/var/www/html/conf/local.php"
+          PERSISTENT_CONF2="${WORKDIR}/tests/conf/acl.auth.php:/var/www/html/conf/acl.auth.php"
+          PERSISTENT_CONF3="${WORKDIR}/tests/conf/users.auth.php:/var/www/html/conf/users.auth.php"
           docker pull ghcr.io/${{ github.repository_owner }}/dokuwiki:$IMAGE_TAG
           docker run -d \
             --name dokuwiki_test \
