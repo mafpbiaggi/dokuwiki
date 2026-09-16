@@ -5,63 +5,61 @@ on:
     workflows: ["Docker build environment"]
     types:
       - completed
+  
+  pull_request: 
+    branches: [ '*' ]
+    paths:
+      - '.github/workflows/tests.yaml'
+      - 'tests/**'
 
 jobs:
   tests:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name == 'pull_request' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Repository checkout
+      - name:  Check out repository
         uses: actions/checkout@v6.1.0
         with:
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha }}
 
-      - name: Log in to GitHub container registry
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pull image and run container
+      - name: Pull image and start container
         run: |
-          IMAGE_TAG=$(cut -d' ' -f1 app/VERSION)
           WORKDIR=$(pwd)
-          PERSISTENT_DATA="${WORKDIR}/tests/data:/var/www/html/data"
+          IMAGE="ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:$(cut -d' ' -f1 ${WORKDIR}/app/VERSION)"
           PERSISTENT_CONF1="${WORKDIR}/tests/conf/local.php:/var/www/html/conf/local.php"
           PERSISTENT_CONF2="${WORKDIR}/tests/conf/acl.auth.php:/var/www/html/conf/acl.auth.php"
           PERSISTENT_CONF3="${WORKDIR}/tests/conf/users.auth.php:/var/www/html/conf/users.auth.php"
-          docker pull ghcr.io/${{ github.repository_owner }}/dokuwiki:$IMAGE_TAG
+          docker pull ${IMAGE}
           docker run -d \
-            --name dokuwiki_test \
+            --name ${{ github.event.repository.name }} \
             -p 80:80 \
-            -v ${PERSISTENT_DATA} \
             -v ${PERSISTENT_CONF1} \
             -v ${PERSISTENT_CONF2} \
             -v ${PERSISTENT_CONF3} \
-            ghcr.io/${{ github.repository_owner }}/dokuwiki:$IMAGE_TAG
+            ${IMAGE}
 
-      - name: Wait for container to be running
+      - name: Wait for container readiness
         run: |
-          echo "Waiting for container to be running..."
+          echo "Waiting for container readiness ..."
           sleep 10
       
-      - name: Check container status
+      - name: Verify container status
         run: |
-          STATUS=$(docker inspect --format='{{ .State.Status }}' dokuwiki_test)
-          echo "Status: $STATUS"
-          if [ "$STATUS" != "running" ]; then
-            echo "Error: Container dokuwiki_test is not running."
-            docker logs dokuwiki_test
-            exit 1
-          fi
-          echo "Container dokuwiki_test is running."
-      
-      - name: Run test
-        run: |
-          bash tests/check.sh
+          bash tests/container_status.sh ${{ github.event.repository.name }}
 
-      - name: Cleanup
+      - name: 
+      - name: Check application health
+        run: |
+          bash tests/health_check_app.sh
+
+      - name: Clean up temporary resources
         if: always()
-        run: docker rm -f dokuwiki_test || true
+        run: docker rm -f ${{ github.event.repository.name }} || true
