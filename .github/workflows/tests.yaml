@@ -55,7 +55,6 @@ jobs:
         run: |
           bash tests/container_status.sh ${{ github.event.repository.name }}
 
-      - name: 
       - name: Check application health
         run: |
           bash tests/health_check_app.sh
