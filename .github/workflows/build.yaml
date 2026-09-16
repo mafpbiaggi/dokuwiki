@@ -7,8 +7,6 @@ on:
       - '.github/workflows/build.yaml'
       - 'docker/**'
       - 'app/**'
-      - 'tests/**'
-      - 'releases/**'
 
 permissions:
   contents: read
