@@ -1,7 +1,7 @@
 name: Docker build environment
 
 on:
-  pull_request: 
+  pull_request:
     branches: [ '*' ]
     paths:
       - '.github/workflows/build.yaml'
@@ -15,30 +15,68 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.vars.outputs.tag }}
+      artifact: image-${{ github.run_id }}
 
     steps:
-      - name: Repository checkout
+      - name: Check out repository
         uses: actions/checkout@v6.1.0
 
       - name: Set image tag
         id: vars
         run: echo "tag=$(cut -d' ' -f1 app/VERSION)" >> "$GITHUB_OUTPUT"
 
-      - name: Log in to GitHub container registry
+      - name: Build app image
+        run: |
+          docker build \
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            -t ${{ github.event.repository.name }}:${{ steps.vars.outputs.tag }} \
+            -f docker/Dockerfile \
+            app/
+
+      - name: Export image to artifact
+        run: |
+          mkdir -p /tmp/image
+          docker save ${{ github.event.repository.name }}:${{ steps.vars.outputs.tag }} -o /tmp/image/image.tar
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: image-${{ github.run_id }}
+          path: /tmp/image/image.tar
+          retention-days: 1
+
+  test:
+    needs: build
+    uses: ./.github/workflows/tests.yaml
+    with:
+      image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
+      artifact_name: ${{ needs.build.outputs.artifact }}
+
+  push:
+    needs: [ build, test ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download image artifact
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: ${{ needs.build.outputs.artifact }}
+          path: /tmp/image
+
+      - name: Load image
+        run: docker load -i /tmp/image/image.tar
+
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build app image
+      - name: Tag and push image
         run: |
-          docker build \
-            --build-arg BUILDKIT_INLINE_CACHE=1 \
-            -t ghcr.io/${{ github.repository_owner }}/dokuwiki:${{ steps.vars.outputs.tag }} \
-            -f docker/Dockerfile \
-            app/
-
-      - name: Push app image
-        run: |
-          docker push ghcr.io/${{ github.repository_owner }}/dokuwiki:${{ steps.vars.outputs.tag }}
+          IMAGE="ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}"
+          docker tag ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }} "${IMAGE}"
+          docker push "${IMAGE}"
