@@ -61,15 +61,10 @@ jobs:
       - name: Start container
         run: |
           WORKDIR=$(pwd)
-          PERSISTENT_CONF1="${WORKDIR}/tests/conf/local.php:/var/www/html/conf/local.php"
-          PERSISTENT_CONF2="${WORKDIR}/tests/conf/acl.auth.php:/var/www/html/conf/acl.auth.php"
-          PERSISTENT_CONF3="${WORKDIR}/tests/conf/users.auth.php:/var/www/html/conf/users.auth.php"
           docker run -d \
             --name ${{ github.event.repository.name }} \
+            -v ${WORKDIR}/tests/conf/local.php:/var/www/html/conf/local.php \
             -p 80:80 \
-            -v ${PERSISTENT_CONF1} \
-            -v ${PERSISTENT_CONF2} \
-            -v ${PERSISTENT_CONF3} \
             ${{ steps.vars.outputs.image }}
 
       - name: Wait for container readiness
