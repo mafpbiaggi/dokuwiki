@@ -53,3 +53,5 @@ jobs:
     if: '! cancelled() && ! failure()'
     needs: [ publish ]
     uses: ./.github/workflows/debug.yml
+    with:
+      digest: ${{ needs.publish.outputs.digest }}

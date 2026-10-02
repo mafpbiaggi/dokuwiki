@@ -2,6 +2,10 @@ name: Debug changes
 
 on: 
   workflow_call:
+    inputs:
+      digest:
+        required: true
+        type: string
 
 jobs:
   run:
@@ -9,4 +13,4 @@ jobs:
     
     steps:
       - name: Run steps
-        run: echo "SUCCESS"
+        run: echo "${{ inputs.digest }}"
