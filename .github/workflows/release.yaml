@@ -28,11 +28,14 @@ jobs:
             echo "exists=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Prepare body file to release release_notes
+        run: tail -n +3 release_notes > /tmp/body.md    
+
       - name: Create Release
         if: steps.exists.outputs.exists != 'true'
         uses: ncipollo/release-action@v1.21.0
         with:
           tag: ${{ steps.get_tag.outputs.tag }}
           name: ${{ steps.get_tag.outputs.tag }}
-          bodyFile: release_notes
+          bodyFile: /tmp/body.md
           commit: ${{ github.sha }}
