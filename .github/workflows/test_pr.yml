@@ -1,0 +1,27 @@
+name: Build/Scan/Test/Publish/Release
+
+on:
+  pull_request:
+    branches: [ '**' ]
+    paths:
+      - 'app/**'
+      - 'docker/**'
+      - 'release_notes'
+      - 'README.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pull_request
+  cancel-in-progress: false
+  
+jobs:
+  changes:
+    uses: ./.github/workflows/changes.yml
+    
+  debug:
+    needs: changes
+    uses: ./.github/workflows/debug.yml
+    with:
+      changed: ${{ needs.changes.outputs.changed }}
