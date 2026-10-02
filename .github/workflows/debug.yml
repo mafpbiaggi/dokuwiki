@@ -1,0 +1,16 @@
+name: Debug changes
+
+on: 
+  workflow_call:
+    inputs:
+      digest:
+        required: true
+        type: string
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Run steps
+        run: echo "${{ inputs.digest }}"
