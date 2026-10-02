@@ -13,13 +13,13 @@ concurrency:
   
 jobs:
   build:
-    uses: ./.github/workflows/build.yaml
+    uses: ./.github/workflows/build.yml
     permissions:
       contents: read
   
   scan:
     needs: build
-    uses: ./.github/workflows/scan.yaml
+    uses: ./.github/workflows/scan.yml
     with:
       image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
       artifact_name: ${{ needs.build.outputs.artifact }}
@@ -28,7 +28,7 @@ jobs:
 
   test:
     needs: [ build, scan ]
-    uses: ./.github/workflows/test.yaml
+    uses: ./.github/workflows/test.yml
     with:
       image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
       artifact_name: ${{ needs.build.outputs.artifact }}
@@ -37,7 +37,7 @@ jobs:
 
   push:
     needs: [ build, test ]
-    uses: ./.github/workflows/push.yaml
+    uses: ./.github/workflows/push.yml
     with:
       tag: ${{ needs.build.outputs.tag }}
       artifact_name: ${{ needs.build.outputs.artifact }}
@@ -47,6 +47,6 @@ jobs:
   
   release:
     needs: push
-    uses: ./.github/workflows/release.yaml
+    uses: ./.github/workflows/release.yml
     permissions:
       contents: write
