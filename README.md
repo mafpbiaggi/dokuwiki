@@ -1,6 +1,7 @@
 # DokuWiki
 
 [![Build/Scan/Test/Push/Release](https://github.com/mafpbiaggi/dokuwiki/actions/workflows/full_main.yaml/badge.svg)](https://github.com/mafpbiaggi/dokuwiki/actions/workflows/full_main.yaml)
+[![Release](https://img.shields.io/badge/Release-v1.0.0-blue?logo)](https://github.com/mafpbiaggi/dokuwiki/releases/tag/v1.0.0)
 
 > **ATENÇÃO**: Este repositório não é oficial do projeto DokuWiki. Consulte [mais informações aqui](#dados-oficiais).
 
