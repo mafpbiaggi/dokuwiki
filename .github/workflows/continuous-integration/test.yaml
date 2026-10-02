@@ -1,0 +1,47 @@
+name: Test
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        required: true
+        type: string
+      artifact_name:
+        required: true
+        type: string
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6.1.0
+
+      - name: Download image artifact
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: /tmp/image
+
+      - name: Load image from artifact
+        run: docker load -i /tmp/image/image.tar
+
+      - name: Start container
+        run: |
+          WORKDIR=$(pwd)
+          docker run -d \
+            --name ${{ github.event.repository.name }} \
+            -v ${WORKDIR}/tests/conf/local.php:/var/www/html/conf/local.php \
+            -p 80:80 \
+            ${{ inputs.image }}
+
+      - name: Wait for container
+        run: bash tests/container_status.sh ${{ github.event.repository.name }}
+
+      - name: Check application health
+        run: bash tests/health_check_app.sh
+
+      - name: Clean up temporary resources
+        if: always()
+        run: docker rm -f ${{ github.event.repository.name }} || true

@@ -1,0 +1,51 @@
+name: Build
+
+on:
+  workflow_call:
+    outputs:
+      tag:
+        value: ${{ jobs.image.outputs.tag }}
+      artifact:
+        value: ${{ jobs.image.outputs.artifact }}
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+
+    outputs:
+      tag: ${{ steps.set_image.outputs.tag }}
+      artifact: image-${{ github.run_id }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6.1.0
+
+      - name: Set image tag
+        id: set_image
+        run: echo "tag=$(cut -d' ' -f1 app/VERSION)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v4.4.1
+
+      - name: Build image
+        uses: docker/build-push-action@v7.4.0
+        with:
+          context: app/
+          file: docker/Dockerfile
+          push: false
+          load: true
+          tags: ${{ github.event.repository.name }}:${{ steps.set_image.outputs.tag }}
+      
+      - name: Export image to artifact
+        env:
+          IMAGE: ${{ github.event.repository.name }}:${{ steps.set_image.outputs.tag }}
+        run: |
+          mkdir -p /tmp/image
+          docker save "$IMAGE" -o /tmp/image/image.tar
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: image-${{ github.run_id }}
+          path: /tmp/image/image.tar
+          retention-days: 1
