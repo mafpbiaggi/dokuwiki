@@ -1,0 +1,42 @@
+name: Test changes
+
+on:
+  pull_request:
+    branches: [ '**' ]
+    paths:
+      - 'app/**'
+      - 'docker/**'
+      - 'release_notes'
+      - 'README.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+  
+jobs:
+  changes:
+    uses: ./.github/workflows/changes.yml
+    
+  build:
+    needs: changes
+    if: needs.changes.outputs.changed == 'true'
+    uses: ./.github/workflows/build.yml
+    with:
+      changed: ${{ needs.changes.outputs.changed }}
+  
+  scan:
+    needs: build
+    uses: ./.github/workflows/scan.yml
+    with:
+      image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
+      artifact_name: ${{ needs.build.outputs.artifact }}
+
+  test:
+    needs: [ build, scan ]
+    uses: ./.github/workflows/test.yml
+    with:
+      image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
+      artifact_name: ${{ needs.build.outputs.artifact }}
