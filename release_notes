@@ -1,12 +1,12 @@
-  ## v1.0.0
-  
-  ### Alterado
-  - Reestruturação do CI/CD substituindo workflows monolíticos por estrutura modular
-  - Scripts de teste agora incluem lógica de retry para maior confiabilidade
-  
-  ### Adicionado
-  - Arquivo Contributing.md com diretrizes de contribuição
-  - Verificação de status do serviço Apache nos testes de container
-  
-  ### Removido
-  - Workflows antigos build.yaml e tests.yaml
+## v1.0.0
+
+### Alterado
+- Reestruturação do CI/CD substituindo workflows monolíticos por estrutura modular
+- Scripts de teste agora incluem lógica de retry para maior confiabilidade
+
+### Adicionado
+- Arquivo Contributing.md com diretrizes de contribuição
+- Verificação de status do serviço Apache nos testes de container
+
+### Removido
+- Workflows antigos build.yaml e tests.yaml
