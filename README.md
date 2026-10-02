@@ -1,5 +1,7 @@
 # DokuWiki
 
+[![Build/Scan/Test/Push/Release](https://github.com/mafpbiaggi/dokuwiki/actions/workflows/full_main.yaml/badge.svg)](https://github.com/mafpbiaggi/dokuwiki/actions/workflows/full_main.yaml)
+
 > **ATENÇÃO**: Este repositório não é oficial do projeto DokuWiki. Consulte [mais informações aqui](#dados-oficiais).
 
 O DokuWiki é um sistema de wiki leve, sem banco de dados, desenvolvido em PHP. Ele é amplamente utilizado para documentação, conhecimento interno, wikis pessoais e sites colaborativos, mantendo uma instalação simples e de baixa manutenção.
