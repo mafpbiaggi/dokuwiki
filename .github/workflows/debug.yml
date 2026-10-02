@@ -13,8 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+
+      - name: Check out repository
+        uses: actions/checkout@v6.1.0
+
       - name: Run steps
         run: |
           echo "Digest = ${{ inputs.digest }}"
-          echo "Version = $(grep '^## v' | head -n1 | cut -d' ' -f2)"
+          echo "Version = $(grep '^## v' release_notes | head -n1 | cut -d' ' -f2)"
           echo "Body = $(tail -n +3 release_notes)"
