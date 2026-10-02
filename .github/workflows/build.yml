@@ -34,7 +34,7 @@ jobs:
           file: docker/Dockerfile
           push: false
           load: true
-          tags: ${{ github.event.repository.name }}:${{ steps.set_image.outputs.tag }}
+          tags: ${{ github.event.repository.name }}:${{ steps.set_image.outps.tag }}
       
       - name: Export image to artifact
         env:
