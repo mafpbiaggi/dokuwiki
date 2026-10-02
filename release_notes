@@ -1,12 +1,8 @@
-## v1.0.0
+## v1.0.1
 
 ### Alterado
-- Reestruturação do CI/CD substituindo workflows monolíticos por estrutura modular
-- Scripts de teste agora incluem lógica de retry para maior confiabilidade
-
-### Adicionado
-- Arquivo Contributing.md com diretrizes de contribuição
-- Verificação de status do serviço Apache nos testes de container
+- Extensão dos arquivos de workflow de `.yaml` para `.yml`, seguindo o padrão do repositório [dokuwiki-iac](https://github.com/mafpbiaggi/dokuwiki-iac)
+- Nome do arquivo `full_main.yaml` para `push_main.yml`
 
 ### Removido
-- Workflows antigos build.yaml e tests.yaml
+- `.github/workflows/**` e `tests/**` dos paths de disparo dos workflows `pull_request.yml` e `push_main.yml`
