@@ -1,0 +1,12 @@
+name: Debug changes
+
+on: 
+  workflow_call:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Run steps
+        run: echo "SUCCESS"

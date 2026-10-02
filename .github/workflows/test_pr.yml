@@ -38,3 +38,15 @@ jobs:
     with:
       image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
       artifact_name: ${{ needs.build.outputs.artifact }}
+
+  publish:
+    needs: [ build, test ]
+    uses: ./.github/workflows/publish.yml
+    with:
+      tag: ${{ needs.build.outputs.tag }}
+      artifact_name: ${{ needs.build.outputs.artifact }}
+
+  debug:
+    if: '! cancelled() && ! failure()'
+    needs: [ publish ]
+    uses: ./.github/workflows/debug.yml
