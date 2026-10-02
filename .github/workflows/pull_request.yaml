@@ -1,0 +1,38 @@
+name: Build/Scan/Test
+
+on:
+  pull_request:
+    branches: [ '**' ]
+    paths:
+      - '.github/workflows/**'
+      - 'app/**'
+      - 'docker/**'
+      - 'tests/**'
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/continuous-integration/build.yaml
+    permissions:
+      contents: read
+  
+  scan:
+    needs: build
+    uses: ./.github/workflows/continuous-integration/scan.yaml
+    with:
+      image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
+      artifact_name: ${{ needs.build.outputs.artifact }}
+    permissions:
+      contents: read
+
+  test:
+    needs: [ build, scan ]
+    uses: ./.github/workflows/continuous-integration/test.yaml
+    with:
+      image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
+      artifact_name: ${{ needs.build.outputs.artifact }}
+    permissions:
+      contents: read

@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  workflow_call:
+
+jobs:
+  launch:
+    runs-on: ubuntu-latest
+
+    outputs:
+      tag: ${{ steps.get_tag.outputs.tag }}
+    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6.1.0
+
+      - name: Get tag version
+        id: get_tag
+        run: echo "tag=$(grep "^v" release_notes | head -n1 | cut -d' ' -f2)" >> "$GITHUB_OUTPUT"
+
+      - name: Skip if release already exists
+        id: exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.get_tag.outputs.tag }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create Release
+        if: steps.exists.outputs.exists != 'true'
+        uses: ncipollo/release-action@v1.21.0
+        with:
+          tag: ${{ steps.get_tag.outputs.tag }}
+          name: ${{ steps.get_tag.outputs.tag }}
+          bodyFile: release_notes
+          commit: ${{ github.sha }}
