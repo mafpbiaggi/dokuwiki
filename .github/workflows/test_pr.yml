@@ -24,8 +24,6 @@ jobs:
     needs: changes
     if: needs.changes.outputs.changed == 'true'
     uses: ./.github/workflows/build.yml
-    with:
-      changed: ${{ needs.changes.outputs.changed }}
   
   scan:
     needs: build
