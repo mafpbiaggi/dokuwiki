@@ -1,18 +1,16 @@
-name: Build/Scan/Test
+name: Build/Scan/Test/Push/Release
 
 on:
-  pull_request:
-    branches: [ '**' ]
+  push:
+    branches: [ 'main' ]
     paths:
-      - '.github/workflows/**'
       - 'app/**'
       - 'docker/**'
-      - 'tests/**'
 
 concurrency:
-  group: pr-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
-
+  group: push-main
+  cancel-in-progress: false
+  
 jobs:
   build:
     uses: ./.github/workflows/build.yaml
@@ -36,3 +34,19 @@ jobs:
       artifact_name: ${{ needs.build.outputs.artifact }}
     permissions:
       contents: read
+
+  push:
+    needs: [ build, test ]
+    uses: ./.github/workflows/push.yaml
+    with:
+      tag: ${{ needs.build.outputs.tag }}
+      artifact_name: ${{ needs.build.outputs.artifact }}
+    permissions:
+      contents: read
+      packages: write
+  
+  release:
+    needs: push
+    uses: ./.github/workflows/release.yaml
+    permissions:
+      contents: write
