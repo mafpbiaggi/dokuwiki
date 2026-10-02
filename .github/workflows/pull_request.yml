@@ -4,10 +4,8 @@ on:
   pull_request:
     branches: [ '**' ]
     paths:
-      - '.github/workflows/**'
       - 'app/**'
       - 'docker/**'
-      - 'tests/**'
 
 concurrency:
   group: pr-${{ github.event.pull_request.number }}
@@ -15,13 +13,13 @@ concurrency:
 
 jobs:
   build:
-    uses: ./.github/workflows/build.yaml
+    uses: ./.github/workflows/build.yml
     permissions:
       contents: read
   
   scan:
     needs: build
-    uses: ./.github/workflows/scan.yaml
+    uses: ./.github/workflows/scan.yml
     with:
       image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
       artifact_name: ${{ needs.build.outputs.artifact }}
@@ -30,7 +28,7 @@ jobs:
 
   test:
     needs: [ build, scan ]
-    uses: ./.github/workflows/test.yaml
+    uses: ./.github/workflows/test.yml
     with:
       image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
       artifact_name: ${{ needs.build.outputs.artifact }}
