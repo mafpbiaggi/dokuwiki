@@ -61,7 +61,7 @@ jobs:
             --name ${{ github.event.repository.name }} \
             -v ${WORKDIR}/tests/conf/local.php:/var/www/html/conf/local.php \
             -p 80:80 \
-            ${{ inputs.image }}
+            $IMAGE
 
       - name: Wait for container
         run: bash tests/container_status.sh ${{ github.event.repository.name }}
