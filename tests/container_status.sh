@@ -1,12 +1,20 @@
 #!/bin/bash
-CONTAINER=$1
-STATUS=$(docker inspect --format='{{ .State.Status }}' $CONTAINER)
 
-if [ "$STATUS" != "running" ]; then
-    echo "[ERROR] Container '${CONTAINER}' state is '${STATUS}' (expected: running)."
-    echo "--------------------------------------------------------------------"
-    docker logs ${CONTAINER}
-    echo "--------------------------------------------------------------------"
-    exit 1
-fi
-echo "[SUCCESS] Container '${CONTAINER}' is healthy and running."
+CONTAINER=$1
+for i in {1..10}; do
+    STATUS=$(docker inspect --format='{{ .State.Status }}' $CONTAINER)
+    if [ "$STATUS" == "running" ]; then
+        SERVICE=$(docker logs -n1 $CONTAINER 2>&1 | grep "apache2 -D FOREGROUND")
+        if [[ ! -z $SERVICE ]]; then
+            echo "[SUCCESS] Container '${CONTAINER}' is running."
+            exit 0
+        fi
+    fi
+    echo "Waiting for container... attempt $i"
+    sleep 5
+done
+echo "[ERROR] Container '${CONTAINER}' status check failed."
+echo "--------------------------------------------------------------------"
+docker logs ${CONTAINER}
+echo "--------------------------------------------------------------------"
+exit 1
