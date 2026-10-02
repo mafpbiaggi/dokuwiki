@@ -15,13 +15,13 @@ concurrency:
 
 jobs:
   build:
-    uses: ./.github/workflows/continuous-integration/build.yaml
+    uses: ./.github/workflows/build.yaml
     permissions:
       contents: read
   
   scan:
     needs: build
-    uses: ./.github/workflows/continuous-integration/scan.yaml
+    uses: ./.github/workflows/scan.yaml
     with:
       image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
       artifact_name: ${{ needs.build.outputs.artifact }}
@@ -30,7 +30,7 @@ jobs:
 
   test:
     needs: [ build, scan ]
-    uses: ./.github/workflows/continuous-integration/test.yaml
+    uses: ./.github/workflows/test.yaml
     with:
       image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
       artifact_name: ${{ needs.build.outputs.artifact }}
