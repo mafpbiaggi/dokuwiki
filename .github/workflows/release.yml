@@ -57,15 +57,17 @@ jobs:
           else
             IMG_TAG=$(cut -d' ' -f1 app/VERSION)
             IMG="ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:$IMG_TAG"
-            echo "DIGEST=$(docker buildx imagetools '$IMG' --format '{{ .Manifest }}' | grep -v 'MediaType')" >> "$GITHUB_ENV"
+            echo "DIGEST=$(docker buildx imagetools inspect '$IMG' --format '{{ .Manifest }}' | grep -v 'MediaType')" >> "$GITHUB_ENV"
           fi
 
       - name: Add digest to body file
         env:
           DIGEST: ${{ env.DIGEST }}
         run: |
-          echo -n "## Imagem" >> /tmp/body.md
-          echo -n "$DIGEST" >> /tmp/body.md
+          echo -e "\n## Imagem" >> /tmp/body.md
+          echo "\`\`\`text" >> /tmp/body.md
+          echo "$DIGEST" >> /tmp/body.md
+          echo "\`\`\`text" >> /tmp/body.md
 
       - name: Create Release
         uses: ncipollo/release-action@v1.21.0
