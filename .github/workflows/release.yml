@@ -4,7 +4,6 @@ on:
   workflow_call:
     inputs:
       digest:
-        required: false
         type: string
         default: 'none'
 
@@ -51,20 +50,18 @@ jobs:
 
       - name: Get image digest
         id: digest
-        env:
-          INPUT: ${{ inputs.digest }}
         run: |
-          if $INPUT != 'none'; then
-            echo "DIGEST=${{ inputs.digest }}" >> "$GITHUB_ENV"
+          if ${{ inputs.digest }} != 'none'; then
+            echo "manifest=${{ inputs.digest }}" >> "$GITHUB_OUTPUT"
           else
             IMG_TAG=$(cut -d' ' -f1 app/VERSION)
             IMG="ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:$IMG_TAG"
-            echo "DIGEST=$(docker buildx imagetools inspect '$IMG' --format '{{ .Manifest }}' | grep -v 'MediaType')" >> "$GITHUB_ENV"
+            echo "manifest=$(docker buildx imagetools inspect '$IMG' --format '{{ .Manifest }}' | grep -v 'MediaType')" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Add digest to body file
         env:
-          DIGEST: ${{ env.DIGEST }}
+          DIGEST: ${{ steps.digest.outputs.manifest }}
         run: |
           echo -e "\n## Imagem" >> /tmp/body.md
           echo "\`\`\`text" >> /tmp/body.md
