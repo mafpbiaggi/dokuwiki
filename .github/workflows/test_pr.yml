@@ -55,4 +55,5 @@ jobs:
       contents: write
     uses: ./.github/workflows/release.yml
     with:
-      digest: ${{ needs.publish.outputs.digest }}
+      image_name: ${{ needs.publish.outputs.image_name }}
+      image_digest: ${{ needs.publish.outputs.image_digest }}

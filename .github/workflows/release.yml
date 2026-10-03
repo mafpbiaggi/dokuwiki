@@ -3,7 +3,12 @@ name: Release
 on:
   workflow_call:
     inputs:
-      digest:
+      image_name:
+        required: false
+        type: string
+        default: 'none'
+      image_digest:
+        required: false
         type: string
         default: 'none'
 
@@ -51,23 +56,29 @@ jobs:
       - name: Get image digest
         id: digest
         env:
-          INPUT: ${{ inputs.digest }}
+          NAME: ${{ inputs.image_name }}
+          DIGEST: ${{ inputs.image_digest }}
         run: |
-          if [[ $INPUT == 'none' ]]; then
+          if [[ $NAME == 'none' || $DIGEST == 'none' ]]; then
               IMG_TAG=$(cut -d' ' -f1 app/VERSION)
               IMG="ghcr.io/mafpbiaggi/dokuwiki:$IMG_TAG"
-              MANIFEST=$(docker buildx imagetools inspect $IMG --format '{{ .Manifest }}' | grep -v 'MediaType')
-              echo "manifest=$MANIFEST" >> "$GITHUB_OUTPUT"
+              NAME=$(docker buildx imagetools inspect $IMG --format '{{ .Manifest }}' | grep 'Name')
+              DIGEST=$(docker buildx imagetools inspect $IMG --format '{{ .Manifest }}' | grep 'Digest')
+              echo "man_name=$NAME" >> "$GITHUB_OUTPUT"
+              echo "man_digest=$DIGEST" >> "$GITHUB_OUTPUT"
           else
-              echo "manifest=$INPUT" >> "$GITHUB_OUTPUT"
+              echo "man_name=$NAME" >> "$GITHUB_OUTPUT"
+              echo "man_digest=$DIGEST" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Add digest to body file
         env:
-          DIGEST: ${{ steps.digest.outputs.manifest }}
+          NAME: ${{ steps.digest.outputs.man_name }}
+          DIGEST: ${{ steps.digest.outputs.man_digest }}
         run: |
           echo -e "\n## Imagem" >> /tmp/body.md
           echo "\`\`\`text" >> /tmp/body.md
+          echo "$NAME" >> /tmp/body.md
           echo "$DIGEST" >> /tmp/body.md
           echo "\`\`\`text" >> /tmp/body.md
 

@@ -11,7 +11,9 @@ on:
         type: string
 
     outputs:
-      digest: 
+      image_name:
+        value: ${{ jobs.image.outputs.name }}
+      image_digest: 
         value: ${{ jobs.image.outputs.digest }}
 
 jobs:
@@ -19,7 +21,8 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      digest: ${{ steps.push.outputs.manifest }}
+      name: ${{ steps.push.outputs.man_name }}
+      digest: ${{ steps.push.outputs.man_digest }}
 
     steps:
       - name: Download image artifact
@@ -49,5 +52,7 @@ jobs:
             docker tag "$LOCAL_IMG" "$REMOTE_IMG:$t"
             docker push "$REMOTE_IMG:$t"
           done
-          MANIFEST=$(docker buildx imagetools inspect $REMOTE_IMG:$TAG --format '{{ .Manifest }}' | grep -v 'MediaType')
-          echo "manifest=$MANIFEST" >> "$GITHUB_OUTPUT"          
+          NAME=$(docker buildx imagetools inspect $REMOTE_IMG:$TAG --format '{{ .Manifest }}' | grep 'Name')
+          DIGEST=$(docker buildx imagetools inspect $REMOTE_IMG:$TAG --format '{{ .Manifest }}' | grep 'Digest')
+          echo "man_name=$NAME" >> "$GITHUB_OUTPUT"          
+          echo "man_digest=$DIGEST" >> "$GITHUB_OUTPUT"          
