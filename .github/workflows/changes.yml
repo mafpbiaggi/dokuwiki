@@ -1,0 +1,26 @@
+name: Changes
+
+on:
+  workflow_call:
+    outputs:
+      changed:
+        value: ${{ jobs.check.outputs.changed }}
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    outputs:
+      changed: ${{ steps.filter.outputs.src }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6.1.0
+      
+      - name: Define path change filter
+        uses: dorny/paths-filter@v4.0.3
+        id: filter
+        with:
+          filters: |
+            src:
+              - 'app/**'
+              - 'docker/**'

@@ -1,8 +1,15 @@
-## v1.0.1
+# v1.1.0
 
-### Alterado
-- Extensão dos arquivos de workflow de `.yaml` para `.yml`, seguindo o padrão do repositório [dokuwiki-iac](https://github.com/mafpbiaggi/dokuwiki-iac)
-- Nome do arquivo `full_main.yaml` para `push_main.yml`
+## Adicionado
+- Workflow reutilizável `changes.yml` para detecção de mudanças em `app/**` e
+`docker/**`
+- Outputs `image_name` e `image_digest` no workflow de publish
+- Seção de "Imagem" no body do release com name e digest
 
-### Removido
-- `.github/workflows/**` e `tests/**` dos paths de disparo dos workflows `pull_request.yml` e `push_main.yml`
+## Alterado
+- Renomeia workflow `push.yml` para `publish.yml` com melhorias nos outputs
+- Renomeia job `push` para `publish` em `push_main.yml`
+- Renomeia workflow "Build/Scan/Test" para "Pull request validation"
+- Renomeia workflow "Build/Scan/Test/Push/Release" para "Full CI/CD"
+- Adiciona `release_notes` nos paths de disparo do workflow `push_main.yml`
+- Refatora workflow `release.yml` com jobs separados (`exists` e `launch`)

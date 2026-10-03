@@ -1,4 +1,4 @@
-name: Build/Scan/Test
+name: Pull request validation
 
 on:
   pull_request:

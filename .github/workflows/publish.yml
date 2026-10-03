@@ -1,4 +1,4 @@
-name: Push
+name: Publish
 
 on:
   workflow_call:
@@ -10,13 +10,19 @@ on:
         required: true
         type: string
 
+    outputs:
+      image_name:
+        value: ${{ jobs.image.outputs.name }}
+      image_digest: 
+        value: ${{ jobs.image.outputs.digest }}
+
 jobs:
-  registry:
+  image:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      packages: write
+    outputs:
+      name: ${{ steps.push.outputs.man_name }}
+      digest: ${{ steps.push.outputs.man_digest }}
 
     steps:
       - name: Download image artifact
@@ -36,6 +42,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag and push Docker images
+        id: push
         env:
           TAG: ${{ inputs.tag }}
           LOCAL_IMG: ${{ github.event.repository.name }}:${{ inputs.tag }}
@@ -45,3 +52,7 @@ jobs:
             docker tag "$LOCAL_IMG" "$REMOTE_IMG:$t"
             docker push "$REMOTE_IMG:$t"
           done
+          NAME=$(docker buildx imagetools inspect $REMOTE_IMG:$TAG --format '{{ .Manifest }}' | grep 'Name')
+          DIGEST=$(docker buildx imagetools inspect $REMOTE_IMG:$TAG --format '{{ .Manifest }}' | grep 'Digest')
+          echo "man_name=$NAME" >> "$GITHUB_OUTPUT"          
+          echo "man_digest=$DIGEST" >> "$GITHUB_OUTPUT"          
