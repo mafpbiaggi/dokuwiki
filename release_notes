@@ -1,4 +1,4 @@
-# v1.0.1-r1
+# v1.0.1-r2
 
 ## Alterado
 - Extensão dos arquivos de workflow de `.yaml` para `.yml`, seguindo o padrão do repositório [dokuwiki-iac](https://github.com/mafpbiaggi/dokuwiki-iac)
