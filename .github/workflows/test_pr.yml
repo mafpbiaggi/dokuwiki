@@ -51,6 +51,8 @@ jobs:
   release:
     if: ${{ !cancelled() && !failure() }}
     needs: [ changes, publish ]
+    permissions:
+      contents: write
     uses: ./.github/workflows/release.yml
     with:
       digest: ${{ needs.publish.outputs.digest }}
