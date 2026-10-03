@@ -51,7 +51,7 @@ jobs:
       - name: Get image digest
         id: digest
         run: |
-          if ${{ inputs.digest }} != ''; then
+          if '${{ inputs.digest }}' != ''; then
             echo "manifest=${{ inputs.digest }}" >> "$GITHUB_OUTPUT"
           else
             IMG_TAG=$(cut -d' ' -f1 app/VERSION)
