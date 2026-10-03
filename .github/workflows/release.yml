@@ -51,8 +51,10 @@ jobs:
 
       - name: Get image digest
         id: digest
+        env:
+          INPUT: ${{ inputs.digest }}
         run: |
-          if ${{ inputs.digest }} != 'none'; then
+          if $INPUT != 'none'; then
             echo "DIGEST=${{ inputs.digest }}" >> "$GITHUB_ENV"
           else
             IMG_TAG=$(cut -d' ' -f1 app/VERSION)
