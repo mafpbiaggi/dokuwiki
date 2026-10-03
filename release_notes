@@ -1,8 +1,8 @@
-## v1.0.1-r3
+# v1.0.1-r4
 
-### Alterado
+## Alterado
 - Extensão dos arquivos de workflow de `.yaml` para `.yml`, seguindo o padrão do repositório [dokuwiki-iac](https://github.com/mafpbiaggi/dokuwiki-iac)
 - Nome do arquivo `full_main.yaml` para `push_main.yml`
 
-### Removido
+## Removido
 - `.github/workflows/**` e `tests/**` dos paths de disparo dos workflows `pull_request.yml` e `push_main.yml`
