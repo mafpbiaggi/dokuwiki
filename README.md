@@ -1,7 +1,7 @@
 # DokuWiki
 
-[![Build/Scan/Test/Push/Release](https://github.com/mafpbiaggi/dokuwiki/actions/workflows/full_main.yaml/badge.svg)](https://github.com/mafpbiaggi/dokuwiki/actions/workflows/full_main.yaml)
-[![Release](https://img.shields.io/badge/Release-v1.0.0-blue?logo)](https://github.com/mafpbiaggi/dokuwiki/releases/tag/v1.0.0)
+[![Full CI/CD](https://github.com/mafpbiaggi/dokuwiki/actions/workflows/push_main.yml/badge.svg?branch=main)](https://github.com/mafpbiaggi/dokuwiki/actions/workflows/push_main.yml)
+[![Release](https://img.shields.io/badge/Release-v1.2.0-blue?logo)](https://github.com/mafpbiaggi/dokuwiki/releases/tag/v1.2.0)
 
 > **ATENÇÃO**: Este repositório não é oficial do projeto DokuWiki. Consulte [mais informações aqui](#dados-oficiais).
 
@@ -15,6 +15,7 @@ Este repositório corresponde à árvore principal do projeto DokuWiki e inclui 
 ├── .github/workflows/   # arquivos de integração e entrega contínua
 ├── app/                 # código-fonte principal, arquivos de configuração e assets da aplicação
 ├── docker/              # configuração para criação da imagem Docker
+├── docs/                # documentação específica
 ├── tests/               # scripts de validação e verificação de saúde da aplicação
 ├── README.md            # documentação do projeto
 └── release_notes        # informações de publicação de versão
@@ -71,6 +72,26 @@ docker run -d --name dokuwiki \
   ghcr.io/mafpbiaggi/dokuwiki:<tag-version>
 ```
 Em caso de uma instalação nova, siga os passos 2 e 3 da seção [Instalação rápida](#instalação-rápida).
+
+## Workflows
+
+Os workflows do GitHub Actions automatizam a validação de alterações em `app/` e `docker/`, a varredura de vulnerabilidades, os testes de integração, a publicação da imagem Docker no GHCR e a criação de release. Consulte a [documentação completa dos workflows](docs/Workflows.md) para detalhes sobre:
+
+- Gatilhos e filtros de execução em `push`, `pull_request` e `workflow_call`
+- Jobs reutilizáveis de build, scan, test, publish e release
+- Dependências entre jobs e publicação condicional para o pipeline de CI/CD
+
+## Relação com o repositório `dokuwiki-iac`
+
+Este repositório concentra a base de código e a imagem Docker do projeto DokuWiki, enquanto o repositório [mafpbiaggi/dokuwiki-iac](https://github.com/mafpbiaggi/dokuwiki-iac) cuida da infraestrutura e da automação de provisionamento relacionadas à execução da aplicação em ambientes cloud e de desenvolvimento.
+
+Em termos práticos, a relação entre os dois repositórios é complementar:
+
+- `dokuwiki` define o conteúdo da aplicação, seus artefatos e sua publicação;
+- `dokuwiki-iac` define os recursos de infraestrutura, as configurações de ambiente e as automatizações de deploy;
+- a imagem gerada por este repositório é consumida pela infraestrutura descrita em `dokuwiki-iac`.
+
+Assim, o fluxo de trabalho fica dividido entre a entrega da aplicação e o provisionamento da estrutura necessária para executá-la e operá-la.
 
 ## Licença
 
