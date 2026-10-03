@@ -1,4 +1,4 @@
-name: Push
+name: Publish
 
 on:
   workflow_call:
@@ -10,13 +10,16 @@ on:
         required: true
         type: string
 
+    outputs:
+      digest: 
+        value: ${{ jobs.image.outputs.digest }}
+
 jobs:
-  registry:
+  image:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      packages: write
+    outputs:
+      digest: ${{ steps.push.outputs.manifest }}
 
     steps:
       - name: Download image artifact
@@ -36,12 +39,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag and push Docker images
+        id: push
         env:
           TAG: ${{ inputs.tag }}
           LOCAL_IMG: ${{ github.event.repository.name }}:${{ inputs.tag }}
           REMOTE_IMG: ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
         run: |
-          for t in "$TAG" latest; do
+          for t in "$TAG"; do
             docker tag "$LOCAL_IMG" "$REMOTE_IMG:$t"
             docker push "$REMOTE_IMG:$t"
           done
+          echo "manifest=$(docker buildx imagetools inspect "$REMOTE_IMG:$TAG" --format '{{ .Manifest }}' | grep -v 'MediaType')" >> "$GITHUB_OUTPUT"          

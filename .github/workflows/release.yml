@@ -2,40 +2,77 @@ name: Release
 
 on:
   workflow_call:
+    inputs:
+      digest:
+        required: false
+        type: string
+        default: 'none'
 
 jobs:
-  launch:
+  exists:
     runs-on: ubuntu-latest
 
     outputs:
-      tag: ${{ steps.get_tag.outputs.tag }}
-    
+      release: ${{ steps.release.outputs.tag }}
+      check: ${{ steps.check.outputs.exists }}
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v6.1.0
 
-      - name: Get tag version
-        id: get_tag
-        run: echo "tag=$(grep "^## v" release_notes | head -n1 | cut -d' ' -f2)" >> "$GITHUB_OUTPUT"
+      - name: Get version for release tag
+        id: release
+        run: echo "tag=$(grep "^# v" release_notes | head -n1 | cut -d' ' -f2)" >> "$GITHUB_OUTPUT"
 
-      - name: Skip if release already exists
-        id: exists
+      - name: Check if release already exists
+        id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ steps.get_tag.outputs.tag }}
+          TAG: ${{ steps.release.outputs.tag }}
         run: |
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           fi
 
+  launch:
+    needs: exists
+    if: needs.exists.outputs.check == 'false'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6.1.0
+
       - name: Prepare body file to release release_notes
-        run: tail -n +3 release_notes > /tmp/body.md    
+        run: tail -n +3 release_notes > /tmp/body.md
+      
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v4.4.1
+
+      - name: Get image digest
+        id: digest
+        run: |
+          if ${{ inputs.digest }} != 'none'; then
+            echo "DIGEST=${{ inputs.digest }}" >> "$GITHUB_ENV"
+          else
+            IMG_TAG=$(cut -d' ' -f1 app/VERSION)
+            IMG="ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:$IMG_TAG"
+            echo "DIGEST=$(docker buildx imagetools '$IMG' --format '{{ .Manifest }}' | grep -v 'MediaType')" >> "$GITHUB_ENV"
+          fi
+
+      - name: Add digest to body file
+        env:
+          DIGEST: ${{ env.DIGEST }}
+        run: |
+          echo -n "## Imagem" >> /tmp/body.md
+          echo -n "$DIGEST" >> /tmp/body.md
 
       - name: Create Release
-        if: steps.exists.outputs.exists != 'true'
         uses: ncipollo/release-action@v1.21.0
+        env:
+          RELEASE_TAG: ${{ needs.exists.outputs.release }}
         with:
-          tag: ${{ steps.get_tag.outputs.tag }}
-          name: ${{ steps.get_tag.outputs.tag }}
+          tag: ${{ env.RELEASE_TAG }}
+          name: ${{ env.RELEASE_TAG }}
           bodyFile: /tmp/body.md
           commit: ${{ github.sha }}
