@@ -1,15 +1,9 @@
-# v1.1.0
+# v1.2.0
 
 ## Adicionado
-- Workflow reutilizável `changes.yml` para detecção de mudanças em `app/**` e
-`docker/**`
-- Outputs `image_name` e `image_digest` no workflow de publish
-- Seção de "Imagem" no body do release com name e digest
+- Documentação sobre workflows do GitHub Actions em `docs/Workflows.md`
+- Seção "Workflows" no README.md explicando o pipeline de CI/CD
+- Seção "Relação com o repositório dokuwiki-iac" no README.md
 
 ## Alterado
-- Renomeia workflow `push.yml` para `publish.yml` com melhorias nos outputs
-- Renomeia job `push` para `publish` em `push_main.yml`
-- Renomeia workflow "Build/Scan/Test" para "Pull request validation"
-- Renomeia workflow "Build/Scan/Test/Push/Release" para "Full CI/CD"
-- Adiciona `release_notes` nos paths de disparo do workflow `push_main.yml`
-- Refatora workflow `release.yml` com jobs separados (`exists` e `launch`)
+- Atualização dos badges do GitHub Actions para v1.2.0
