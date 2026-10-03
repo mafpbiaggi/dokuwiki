@@ -1,21 +1,28 @@
-name: Build/Scan/Test/Push/Release
+name: Test changes
 
 on:
-  push:
-    branches: [ 'main' ]
+  pull_request:
+    branches: [ '**' ]
     paths:
       - 'app/**'
       - 'docker/**'
+      - 'release_notes'
+
+permissions:
+  contents: read
 
 concurrency:
-  group: push-main
+  group: pr-${{ github.event.pull_request.number }}
   cancel-in-progress: false
   
 jobs:
+  changes:
+    uses: ./.github/workflows/changes.yml
+    
   build:
+    needs: changes
+    if: needs.changes.outputs.changed == 'true'
     uses: ./.github/workflows/build.yml
-    permissions:
-      contents: read
   
   scan:
     needs: build
@@ -23,8 +30,6 @@ jobs:
     with:
       image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
       artifact_name: ${{ needs.build.outputs.artifact }}
-    permissions:
-      contents: read
 
   test:
     needs: [ build, scan ]
@@ -32,21 +37,22 @@ jobs:
     with:
       image: ${{ github.event.repository.name }}:${{ needs.build.outputs.tag }}
       artifact_name: ${{ needs.build.outputs.artifact }}
-    permissions:
-      contents: read
 
-  push:
+  publish:
     needs: [ build, test ]
-    uses: ./.github/workflows/push.yml
-    with:
-      tag: ${{ needs.build.outputs.tag }}
-      artifact_name: ${{ needs.build.outputs.artifact }}
     permissions:
       contents: read
       packages: write
-  
+    uses: ./.github/workflows/publish.yml
+    with:
+      tag: ${{ needs.build.outputs.tag }}
+      artifact_name: ${{ needs.build.outputs.artifact }}
+
   release:
-    needs: push
-    uses: ./.github/workflows/release.yml
+    if: ${{ !cancelled() && !failure() }}
+    needs: [ changes, publish ]
     permissions:
       contents: write
+    uses: ./.github/workflows/release.yml
+    with:
+      digest: ${{ needs.publish.outputs.digest }}
