@@ -1,7 +1,7 @@
 # DokuWiki
 
 [![Full CI/CD](https://github.com/mafpbiaggi/dokuwiki/actions/workflows/push_main.yml/badge.svg?branch=main)](https://github.com/mafpbiaggi/dokuwiki/actions/workflows/push_main.yml)
-[![Release](https://img.shields.io/badge/Release-v1.2.0-blue?logo)](https://github.com/mafpbiaggi/dokuwiki/releases/tag/v1.2.0)
+[![Release](https://img.shields.io/badge/Release-v1.2.1-blue?logo)](https://github.com/mafpbiaggi/dokuwiki/releases/tag/v1.2.1)
 
 > **ATENÇÃO**: Este repositório não é oficial do projeto DokuWiki. Consulte [mais informações aqui](#dados-oficiais).
 
